@@ -41,6 +41,7 @@
     <Content Include="requirements.txt" />
     <Content Include="slick-crud-app-master\README.md" />
     <Content Include="slick-crud-app-master\templates\sqldatabase.html" />
+    <Content Include="slick-crud-app-master\templates\configure.html" />
   </ItemGroup>
   <ItemGroup>
     <Interpreter Include="env\">
