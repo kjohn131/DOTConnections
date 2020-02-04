@@ -7,7 +7,7 @@
     <ProjectGuid>19ca3311-16b4-4db6-8674-f107aef979ad</ProjectGuid>
     <ProjectHome>.</ProjectHome>
     <ProjectTypeGuids>{789894c7-04a9-4a11-a6b5-3f4435165112};{1b580a1a-fdb3-4b32-83e1-6407eb2722e6};{349c5851-65df-11da-9384-00065b846f21};{888888a0-9f3d-457c-b088-3a5042f75d52}</ProjectTypeGuids>
-    <StartupFile>slick-crud-app-master\flask_app.py</StartupFile>
+    <StartupFile>DOT-Connections\flask_app.py</StartupFile>
     <SearchPath>
     </SearchPath>
     <WorkingDirectory>.</WorkingDirectory>
@@ -28,20 +28,27 @@
     <EnableUnmanagedDebugging>false</EnableUnmanagedDebugging>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="slick-crud-app-master\flask_app.py" />
-    <Compile Include="slick-crud-app-master\functions\sqlquery.py" />
-    <Compile Include="slick-crud-app-master\functions\__init__.py" />
+    <Compile Include="DOT-Connections\flask_app.py" />
+    <Compile Include="DOT-Connections\functions\sqlquery.py" />
+    <Compile Include="DOT-Connections\functions\__init__.py" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="slick-crud-app-master\" />
-    <Folder Include="slick-crud-app-master\functions\" />
-    <Folder Include="slick-crud-app-master\templates\" />
+    <Folder Include="DOT-Connections\" />
+    <Folder Include="DOT-Connections\functions\" />
+    <Folder Include="DOT-Connections\static\" />
+    <Folder Include="DOT-Connections\templates\" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="DOT-Connections\templates\searchpanel.html" />
     <Content Include="requirements.txt" />
-    <Content Include="slick-crud-app-master\README.md" />
-    <Content Include="slick-crud-app-master\templates\sqldatabase.html" />
-    <Content Include="slick-crud-app-master\templates\configure.html" />
+    <Content Include="DOT-Connections\README.md" />
+    <Content Include="DOT-Connections\static\style.css" />
+    <Content Include="DOT-Connections\templates\sqldatabase.html" />
+    <Content Include="DOT-Connections\templates\configure.html" />
+    <Content Include="DOT-Connections\templates\index.html" />
+    <Content Include="DOT-Connections\templates\register.html" />
+    <Content Include="DOT-Connections\templates\home.html" />
+    <Content Include="DOT-Connections\templates\layout.html" />
   </ItemGroup>
   <ItemGroup>
     <Interpreter Include="env\">
