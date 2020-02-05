@@ -211,8 +211,7 @@
                             </a>
                             &nbsp;Configuration
                         </div>
-                        <div class="panel-body">
-                            <form action="{{ url_for('savedata') }}" method="post">
+                            <div class="panel-body">
                                 <table id="myTable" class="table table-striped table-hover table-sm" cellspacing="10" width="100%" style="font-size: 14px; height: auto">
                                     <thead>
                                         <tr style="text-align: right;">
@@ -235,28 +234,35 @@
                                     <input type="submit" id="Save" align="center" class="btn btn-primary" style="width:150px" value="SAVE">
                                     <input type="reset" id="Reset" align="center" class="btn btn-primary" style="width:150px" value="CANCEL">
                                 </div>
-                                </form>
+                            </div>
                         </div>
-                    </div>
                 </div>
             </div>
         </div>
     </div>
-<script>
-    $(document).ready(function () {
-    $('#Save').on('click', function () {
-        $('#myTable tr').each(function (row, tr) {
-        TableData = TableData 
-            + $(tr).find('td:eq(0)').text() + ' '  // Key Type
-            + $(tr).find('td:eq(1)').text() + ' '  // Key
-            + $(tr).find('td:eq(2)').text() + ' '  // Value
-            + '\n';
-    });
-    });
-    });
-</script>
-
-    
+    <script type="text/javascript">
+        $(function () {
+            $('#Save').click(function () {
+                var dataArr = [];
+                $("td").each(function () {
+                    dataArr.push($(this).html());
+                });
+                $.ajax({
+                    type: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    url: "/SaveFile",
+                    data: JSON.stringify(dataArr),
+                    success: function (response) {
+                        console.log(response);
+                    },
+                    error: function (response, error) {
+                        console.log(response);
+                        console.log(error);
+                    }
+                });
+            });
+        });
+    </script>
 </body>
 </html>
 

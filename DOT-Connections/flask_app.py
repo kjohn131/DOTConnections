@@ -7,6 +7,12 @@ from flask import request
 from flask import Flask
 from bs4 import BeautifulSoup
 import pandas as pd
+from flask import jsonify
+import json
+from pandas.io.json import json_normalize
+import numpy as np
+from numpy import array
+import itertools
 
 debug=True
 
@@ -17,7 +23,7 @@ app.secret_key = '0000'
 def loginscreen():
     return render_template('index.html')
 
-@app.route('/login', methods=['GET', 'POST'])
+@app.route('/login.html', methods=['GET', 'POST'])
 def login():
     # Output message if something goes wrong...
     msg = ''
@@ -53,29 +59,32 @@ def register():
         username = request.form['username']
         password = request.form['password']
         email = request.form['email']
-    elif request.method == 'POST':
-        # Form is empty... (no POST data)
-        msg = 'Please fill out the form!'
-    # Show registration form with message (if any)
-    return render_template('register.html', msg=msg)
-        # Check if account exists using MySQL
-    cursor = sql.connect("C:\\sqlite\\DOTConnections.db")
-    cursor.execute('SELECT * FROM accounts WHERE username = %s', (username))
-    account = cursor.fetchone()
-        # If account exists show error and validation checks
-    if account:
-        msg = 'Account already exists!'
-    elif not re.match(r'[^@]+@[^@]+\.[^@]+', email):
-        msg = 'Invalid email address!'
-    elif not re.match(r'[A-Za-z0-9]+', username):
-        msg = 'Username must contain only characters and numbers!'
-    elif not username or not password or not email:
-        msg = 'Please fill out the form!'
-    else:
+        conn = sql.connect("C:\\sqlite\\DOTConnections.db")
+        rows=conn.execute('SELECT username FROM accounts where username IN (username)')
+        rows=list(rows)
+        if len(rows) !=0:
+            for row in rows[0]:
+                if row==username:
+                    msg = 'Account already exists!'
+        if not re.match(r'[^@]+@[^@]+\.[^@]+', email):
+            msg = 'Invalid email address!'
+        elif not re.match(r'[A-Za-z0-9]+', username):
+            msg = 'Username must contain only characters and numbers!'
+        elif not username or not password or not email:
+            msg = 'Please fill out the form!'
+        
+        #msg = 'yha aayaa'
         # Account doesnt exists and the form data is valid, now insert new account into accounts table
-        cursor.execute('INSERT INTO accounts VALUES (NULL, %s, %s, %s)', (username, password, email))
-        mysql.connection.commit()
+        else:
+            conn.execute('INSERT INTO accounts VALUES (?, ?, ?)', (username, password, email))
+            conn.commit()
+
         msg = 'You have successfully registered!'
+
+    elif request.method == 'POST':
+        msg = 'Please fill out the form!'
+    return render_template('register.html', msg=msg)
+
 
 @app.route('/home')
 def home():
@@ -126,7 +135,6 @@ def configure():
     cur = con.cursor()
     cur.execute("SELECT * from Config")
     results = cur.fetchall();
-    print(results)
     con.close()
     return render_template('configure.html', results=results)
 
@@ -136,10 +144,31 @@ def savedata():
     con = sql.connect("C:\\sqlite\\DOTConnections.db")
     con.row_factory = sql.Row
     cur = con.cursor()
-    data = render_template('configure.html')
-    df = pd.read_html(data)
+
+    df = pd.DataFrame(data)
     print(df)
-    return render_template('configure.html')
+
+@app.route('/SaveFile', methods=['POST', 'GET'])
+def SaveFile():
+    send_back = {"status": "failed"}
+    if request.method == 'POST':
+        try:
+            data = request.get_json()
+            print(data)
+            data = array(data)
+            data = np.split(data, 21)
+            print(data)
+            data = pd.DataFrame(np.vstack(data))
+            data = data.replace('<input type="text" value="', '', regex=True)
+            data = data.replace('" style="text-align: center;">','',regex=True)
+            print(data)
+            con = sqlite3.connect("C:\\sqlite\\DOTConnections.db")
+            data.to_sql('Config', con, if_exists='replace', index=False)
+            con.close()
+            send_back["status"] = "success"
+        except Error as err:
+            send_back["status"] = str(err)
+    return jsonify(send_back)
 
 
 @app.route('/logout')
