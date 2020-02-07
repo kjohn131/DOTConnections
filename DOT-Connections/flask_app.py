@@ -4,7 +4,7 @@ from os import environ
 import re
 import sqlite3 as sql
 from flask import request
-from flask import Flask
+from flask import Flask, flash
 from bs4 import BeautifulSoup
 import pandas as pd
 from flask import jsonify
@@ -13,6 +13,7 @@ from pandas.io.json import json_normalize
 import numpy as np
 from numpy import array
 import itertools
+import re
 
 debug=True
 
@@ -23,7 +24,7 @@ app.secret_key = '0000'
 def loginscreen():
     return render_template('index.html')
 
-@app.route('/login.html', methods=['GET', 'POST'])
+@app.route('/login', methods=['GET', 'POST'])
 def login():
     # Output message if something goes wrong...
     msg = ''
@@ -36,15 +37,16 @@ def login():
         conn = sql.connect('C:\\sqlite\\DOTConnections.db')
         conn.row_factory = sql.Row
         cur = conn.cursor()
-        sqlquery = "select exists(SELECT * FROM accounts WHERE username = ? AND password = ?)"
+        sqlquery = "SELECT * FROM accounts WHERE username = ? AND password = ?"
         args = (username,password)
         cur.execute(sqlquery, args)
         row = cur.fetchone()
         if row is None:
-            msg = 'Incorrect username/password!'
+            flash('Incorrect username/password!')
         else:
             # Account doesnt exist or username/password incorrect
             session['loggedin'] = True
+            session['username'] = row['username']
             return render_template('home.html')
     # Show the login form with message (if any)
     return render_template('index.html', msg=msg)
@@ -91,7 +93,7 @@ def home():
     # Check if user is loggedin
     if 'loggedin' in session:
         # User is loggedin show them the home page
-        return render_template('home.html')
+        return render_template('home.html', username = session['username'])
     # User is not loggedin redirect to login page
     return render_template('layout.html')
 
@@ -128,7 +130,7 @@ def searchdata():
     return render_template('sqldatabase.html', results=[])
 
 
-@app.route('/configure')
+@app.route('/configure',)
 def configure():
     con = sql.connect("C:\\sqlite\\DOTConnections.db")
     con.row_factory = sql.Row
@@ -138,39 +140,83 @@ def configure():
     con.close()
     return render_template('configure.html', results=results)
 
-
-@app.route('/savedata', methods=['GET', 'POST'])
-def savedata():
-    con = sql.connect("C:\\sqlite\\DOTConnections.db")
-    con.row_factory = sql.Row
-    cur = con.cursor()
-
-    df = pd.DataFrame(data)
-    print(df)
-
 @app.route('/SaveFile', methods=['POST', 'GET'])
 def SaveFile():
-    send_back = {"status": "failed"}
     if request.method == 'POST':
-        try:
-            data = request.get_json()
-            print(data)
-            data = array(data)
-            data = np.split(data, 21)
-            print(data)
-            data = pd.DataFrame(np.vstack(data))
-            data = data.replace('<input type="text" value="', '', regex=True)
-            data = data.replace('" style="text-align: center;">','',regex=True)
-            print(data)
-            con = sqlite3.connect("C:\\sqlite\\DOTConnections.db")
-            data.to_sql('Config', con, if_exists='replace', index=False)
-            con.close()
-            send_back["status"] = "success"
-        except Error as err:
-            send_back["status"] = str(err)
-    return jsonify(send_back)
+        configdata = request.form["hidden"]
+        configdata = configdata.split("|")
+        while('' in configdata) : 
+            configdata.remove('')
+        configdata = [configdata[i:i + 3] for i in range(0, len(configdata), 3)]
+        configdata = pd.DataFrame(np.vstack(configdata))
+        configdata.columns = ['Key Type','Key','Value']
+        print(configdata)    
+        con = sql.connect("C:\\sqlite\\DOTConnections.db")
+        configdata.to_sql('Config', con, if_exists='replace', index=False)
+        con.close()
 
+        con = sql.connect("C:\\sqlite\\DOTConnections.db")
+        DOTConnections = pd.read_sql_query("SELECT * from DOT", con)
+        Config = pd.read_sql_query("SELECT * from Config", con)
+        con.close()
 
+        Consolidate = pd.merge(DOTConnections, Config, how='left', left_on='Status', right_on='Key')
+        Consolidate.drop(['Key Type', 'Key', 'StatusScore'], axis=1, inplace=True)
+        Consolidate.rename(columns={'Value':'StatusScore'}, inplace=True)
+
+        DOTConnections = Consolidate
+
+        Consolidate = pd.merge(DOTConnections, Config, how='left', left_on='UrbanOrRuralFlag', right_on='Key')
+        Consolidate.drop(['Key Type', 'Key', 'UrbanRuralScore'], axis=1, inplace=True)
+        Consolidate.rename(columns={'Value':'UrbanRuralScore'}, inplace=True)
+
+        DOTConnections = Consolidate
+
+        Config.rename(columns={'Key':'ConstructionCostEstimate'}, inplace=True)
+        ConfigureScore = Config[Config['Key Type'] == 'Cost Score']
+        ConfigureScore.ConstructionCostEstimate = pd.to_numeric(ConfigureScore.ConstructionCostEstimate,errors = 'coerce')
+        DOTConnections.ConstructionCostEstimate = pd.to_numeric(DOTConnections.ConstructionCostEstimate,errors = 'coerce')  
+        ConfigureScore = ConfigureScore.sort_values(by=['ConstructionCostEstimate'])
+        DOTConnections = DOTConnections.sort_values(by=['ConstructionCostEstimate'])
+        Consolidate = pd.merge_asof(DOTConnections, ConfigureScore, on = 'ConstructionCostEstimate', direction = 'nearest')
+        Consolidate.drop(['Key Type', 'CostScore'], axis=1, inplace=True)
+        Consolidate.rename(columns={'Value':'CostScore'}, inplace=True)
+        Config.rename(columns={'ConstructionCostEstimate':'Key'}, inplace=True)
+
+        DOTConnections = Consolidate
+
+        weightage = Config[Config['Key'] == 'Urban Score']
+        Consolidate['Urban Score'] = int(weightage['Value'])
+
+        weightage = Config[Config['Key'] == 'Status Score']
+        Consolidate['Status Score'] = int(weightage['Value'])
+
+        weightage = Config[Config['Key'] == 'Cost Score']
+        Consolidate['Cost Score'] = int(weightage['Value'])
+
+        Consolidate.drop(['CombinedScore'], axis=1, inplace=True)
+        Consolidate[['StatusScore','Status Score']] = Consolidate[['StatusScore','Status Score']].astype(float)
+        Consolidate[['CostScore','Cost Score']] = Consolidate[['CostScore','Cost Score']].astype(float)
+        Consolidate[['UrbanRuralScore','Urban Score']] = Consolidate[['UrbanRuralScore','Urban Score']].astype(float)
+
+        Consolidate['CombinedScore'] = Consolidate['StatusScore'] * Consolidate['Status Score'] + Consolidate['CostScore'] * Consolidate['Cost Score'] + Consolidate['UrbanRuralScore'] * Consolidate['Urban Score']
+
+        Consolidate[['StatusScore','Status Score']] = Consolidate[['StatusScore','Status Score']].astype(int)
+        Consolidate[['CostScore','Cost Score']] = Consolidate[['CostScore','Cost Score']].astype(int)
+        Consolidate[['UrbanRuralScore','Urban Score']] = Consolidate[['UrbanRuralScore','Urban Score']].astype(int)
+        Consolidate['CombinedScore'] = Consolidate['CombinedScore'].astype(int)
+
+        Consolidate.drop(['Status Score', 'Cost Score', 'Urban Score'], axis=1, inplace=True)
+
+        DOTConnections = Consolidate
+
+        con = sql.connect("C:\\sqlite\\DOTConnections.db")
+        DOTConnections.to_sql('DOT', con, if_exists='replace', index=False)
+        con.close()
+
+        return redirect(url_for('configure'))
+    return redirect(url_for('configure'))
+        
 @app.route('/logout')
 def logout():
     # Remove session data, this will log the user out

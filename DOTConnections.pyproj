@@ -29,7 +29,6 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="DOT-Connections\flask_app.py" />
-    <Compile Include="DOT-Connections\functions\sqlquery.py" />
     <Compile Include="DOT-Connections\functions\__init__.py" />
   </ItemGroup>
   <ItemGroup>

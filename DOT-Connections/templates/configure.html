@@ -47,12 +47,15 @@
         }
 
         #Reset {
-            margin-top: -60px;
-            margin-left: 180px;
+            margin-top: 0px;
+            margin-left: 0px;
             background-color: aliceblue;
             border-color: dodgerblue;
             color: dodgerblue;
+            
         }
+
+        .CANCEL {color: dodgerblue;}
 
         div {
             line-height: 25px;
@@ -184,10 +187,10 @@
         </div>
     </div>
     <div id="mySidenav" class="sidenav">
-        <a href="#" id="about">About</a>
-        <a href="#" id="blog">Blog</a>
+        <a href={{ url_for('home') }} id="about">Home</a>
+        <a href="#" id="blog">Analytics</a>
         <a href="#" id="projects">Projects</a>
-        <a href="#" id="contact">Contact</a>
+        <a href="#" id="contact">Reports</a>
     </div>
     <div id="mySidenav1" class="sidenav">
         <a href={{ url_for('searchdata') }} align="center" id="contact1">
@@ -211,7 +214,8 @@
                             </a>
                             &nbsp;Configuration
                         </div>
-                            <div class="panel-body">
+                        <div class="panel-body">
+                            <form action="{{ url_for('SaveFile') }}" method="post">
                                 <table id="myTable" class="table table-striped table-hover table-sm" cellspacing="10" width="100%" style="font-size: 14px; height: auto">
                                     <thead>
                                         <tr style="text-align: right;">
@@ -223,47 +227,45 @@
                                     <tbody>
                                         {% for result in results %}
                                         <tr>
-                                            <td>{{result["Key Type"]}}</td>
-                                            <td>{{result["Key"]}}</td>
-                                            <td><input type="text" value={{result["Value"]}} style="text-align: center;"></td>
+                                            <td><input type="text" value="{{result["Key Type"]}}" readonly="readonly" disabled="disabled" style="text-align: left; width:450px; border:none; background-color: transparent;"></td>
+                                            <td><input type="text" value="{{result["Key"]}}" readonly="readonly" disabled="disabled" style="text-align: left; width:450px; border:none; background-color: transparent;"></td>
+                                            <td><input type="text" value="{{result["Value"]}}" style="text-align: center;"></td>
                                         </tr>
                                         {% endfor %}
+                                        <tr>
+                                            <td><input type="hidden" id="hidden" name="hidden" value=""></td>
+                                        </tr>
                                     </tbody>
                                 </table>
-                                <div class="col-md-4">
-                                    <input type="submit" id="Save" align="center" class="btn btn-primary" style="width:150px" value="SAVE">
-                                    <input type="reset" id="Reset" align="center" class="btn btn-primary" style="width:150px" value="CANCEL">
+                                <div class="col-md-8">
+                                    <input type="button" id="Save" align="center" class="btn btn-primary" style="width:150px" value="SAVE" onclick="showTableData();">
+                                    <input type="submit" hidden="hidden" id="Submit" align="center" class="btn btn-primary" style="width:150px" value="SUBMIT">
+                                    <a href={{ url_for('configure') }} input type="button" id="Reset" align="center" class="btn btn-primary" style="width:150px; height:34px;">CANCEL</a>
                                 </div>
-                            </div>
+                            </form>
                         </div>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
     <script type="text/javascript">
-        $(function () {
-            $('#Save').click(function () {
-                var dataArr = [];
-                $("td").each(function () {
-                    dataArr.push($(this).html());
-                });
-                $.ajax({
-                    type: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    url: "/SaveFile",
-                    data: JSON.stringify(dataArr),
-                    success: function (response) {
-                        console.log(response);
-                    },
-                    error: function (response, error) {
-                        console.log(response);
-                        console.log(error);
-                    }
-                });
-            });
-        });
+        var dataArr = "";
+        var count = 1
+        function showTableData() {
+            if (count == 1) {
+                var a = document.getElementById("myTable").getElementsByTagName("input");
+                var e = a.length
+                for (x = 0; x < e; x++) {
+                    dataArr = dataArr + '|' + a[x].value;
+                }
+                count = 0;
+                document.getElementById("hidden").value = dataArr
+                document.getElementById("Submit").outerHTML = "<input type='submit' id='Submit' align='center' class='btn btn-primary' style='width: 150px' value='SUBMIT'>";
+            }
+        }
     </script>
-</body>
-</html>
+</body >
+</html >
 
 
