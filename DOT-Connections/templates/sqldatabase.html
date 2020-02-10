@@ -323,6 +323,42 @@
                 });
             });
         </script>
+        <script>
+            window.onload = function () {
+                var a = sessionStorage.getItem('projectid');
+                var b = sessionStorage.getItem('status');
+                var c = sessionStorage.getItem('fromname');
+                var d = sessionStorage.getItem('toname');
+                var e = sessionStorage.getItem('district');
+                var f = sessionStorage.getItem('county');
+                if (a !== null) {
+                    document.getElementById("projectid").value = a;
+                }
+                if (b !== null) {
+                    document.getElementById("status").value = b;
+                }
+                if (c !== null) {
+                    document.getElementById("fromname").value = c;
+                }
+                if (d !== null) {
+                    document.getElementById("toname").value = d;
+                }
+                if (e !== null) {
+                    document.getElementById("district").value = e;
+                }
+                if (f !== null) {
+                    document.getElementById("county").value = f;
+                }
+            }
+            window.onbeforeunload = function () {
+                sessionStorage.setItem("projectid", $('#projectid').val());
+                sessionStorage.setItem("status", $('#status').val());
+                sessionStorage.setItem("fromname", $('#fromname').val());
+                sessionStorage.setItem("toname", $('#toname').val());
+                sessionStorage.setItem("district", $('#district').val());
+                sessionStorage.setItem("county", $('#county').val());
+            }
+        </script>
     </div>
 </body>
 </html>

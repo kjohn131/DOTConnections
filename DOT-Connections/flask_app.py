@@ -112,20 +112,36 @@ def searchdata():
         cur = con.cursor()
         if projectid == '' and status !='' and ConstructionCostEstimatefrom != '' and ConstructionCostEstimateto != '' and district != '' and county!= '':
             cur.execute('select * from DOT where Status = ? AND ConstructionCostEstimate BETWEEN ? AND ? AND District = ? AND County = ?' , (status, ConstructionCostEstimatefrom, ConstructionCostEstimateto, district, county))
+        
+        elif projectid == '' and status !='' and ConstructionCostEstimatefrom == '' and ConstructionCostEstimateto == '' and district != '' and county == '':
+            cur.execute('select * from DOT where Status = ? AND District = ?' , (status, district))
+
+        elif projectid == '' and status !='' and ConstructionCostEstimatefrom == '' and ConstructionCostEstimateto == '' and district == '' and county != '':
+            cur.execute('select * from DOT where Status = ? AND County = ?' , (status, county))
+
+        elif projectid == '' and status !='' and ConstructionCostEstimatefrom == '' and ConstructionCostEstimateto == '' and district != '' and county != '':
+            cur.execute('select * from DOT where Status = ? AND District = ? AND County = ?' , (status, district, county))
+
+        elif projectid != '' and status !='' and ConstructionCostEstimatefrom == '' and ConstructionCostEstimateto == '' and district != '' and county != '':
+            cur.execute('select * from DOT where ProjectID = ? AND Status = ? AND District = ? AND County = ?' , (projectid, status, district, county))
+
         elif projectid != '' and status !='' and ConstructionCostEstimatefrom != '' and ConstructionCostEstimateto != '' and district == '' and county!= '':
-            cur.execute('select * from DOT where ProjectID = ? AND Status = ? AND ConstructionCostEstimate BETWEEN ? AND ? AND County = ?' , (projectid, status, ConstructionCostEstimatefrom, ConstructionCostEstimateto, county))
+                    cur.execute('select * from DOT where ProjectID = ? AND Status = ? AND ConstructionCostEstimate BETWEEN ? AND ? AND County = ?' , (projectid, status, ConstructionCostEstimatefrom, ConstructionCostEstimateto, county))
+        
         elif projectid != '' and status !='' and ConstructionCostEstimatefrom != '' and ConstructionCostEstimateto != '' and district != '' and county == '':
             cur.execute('select * from DOT where ProjectID = ? Status = ? AND ConstructionCostEstimate BETWEEN ? AND ? AND District = ?' , (projectid, status, ConstructionCostEstimatefrom, ConstructionCostEstimateto, district))
+        
         elif projectid != '' and status !='' and ConstructionCostEstimatefrom == '' and ConstructionCostEstimateto == '' and district != '' and county != '':
             cur.execute('select * from DOT where Status = ? AND ProjectID = ? AND District = ? AND County = ?' , (projectid,status ,district ,county))
+        
         elif projectid != '' and status != '' and ConstructionCostEstimatefrom == '' and ConstructionCostEstimateto == '' and district == '' and county == '':
             cur.execute('select * from DOT where Status = ? AND ProjectID = ?' , (status, projectid ))
+        
         elif projectid == '' and status != '' and ConstructionCostEstimatefrom == '' and ConstructionCostEstimateto == '' and district == '' and county == '':
             cur.execute('select * from DOT where Status = ?' , (status,))
         else:
             cur.execute('select * from DOT where Status = ? AND ProjectID = ? AND ConstructionCostEstimate BETWEEN ? AND ? AND District = ? AND County = ?' , (status, projectid, ConstructionCostEstimatefrom, ConstructionCostEstimateto, district, county))
         results = cur.fetchall();
-        print(results)
         con.close()
         return render_template('sqldatabase.html', results=results)
     return render_template('sqldatabase.html', results=[])
