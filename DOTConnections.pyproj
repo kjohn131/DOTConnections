@@ -38,6 +38,7 @@
     <Folder Include="DOT-Connections\templates\" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="DOT-Connections\templates\loading.gif" />
     <Content Include="DOT-Connections\templates\searchpanel.html" />
     <Content Include="requirements.txt" />
     <Content Include="DOT-Connections\README.md" />

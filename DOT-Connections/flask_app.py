@@ -125,6 +125,9 @@ def searchdata():
         elif projectid != '' and status !='' and ConstructionCostEstimatefrom == '' and ConstructionCostEstimateto == '' and district != '' and county != '':
             cur.execute('select * from DOT where ProjectID = ? AND Status = ? AND District = ? AND County = ?' , (projectid, status, district, county))
 
+        elif projectid == '' and status !='' and ConstructionCostEstimatefrom != '' and ConstructionCostEstimateto != '' and district == '' and county == '':
+            cur.execute('select * from DOT where Status = ? ConstructionCostEstimate BETWEEN ? AND ?' , (status, ConstructionCostEstimatefrom, ConstructionCostEstimateto))
+
         elif projectid != '' and status !='' and ConstructionCostEstimatefrom != '' and ConstructionCostEstimateto != '' and district == '' and county!= '':
                     cur.execute('select * from DOT where ProjectID = ? AND Status = ? AND ConstructionCostEstimate BETWEEN ? AND ? AND County = ?' , (projectid, status, ConstructionCostEstimatefrom, ConstructionCostEstimateto, county))
         
@@ -142,6 +145,8 @@ def searchdata():
         else:
             cur.execute('select * from DOT where Status = ? AND ProjectID = ? AND ConstructionCostEstimate BETWEEN ? AND ? AND District = ? AND County = ?' , (status, projectid, ConstructionCostEstimatefrom, ConstructionCostEstimateto, district, county))
         results = cur.fetchall();
+        if len(results) == 0:
+            flash('No Data available...')
         con.close()
         return render_template('sqldatabase.html', results=results)
     return render_template('sqldatabase.html', results=[])
@@ -166,8 +171,7 @@ def SaveFile():
             configdata.remove('')
         configdata = [configdata[i:i + 3] for i in range(0, len(configdata), 3)]
         configdata = pd.DataFrame(np.vstack(configdata))
-        configdata.columns = ['Key Type','Key','Value']
-        print(configdata)    
+        configdata.columns = ['Key Type','Key','Value'] 
         con = sql.connect("C:\\sqlite\\DOTConnections.db")
         configdata.to_sql('Config', con, if_exists='replace', index=False)
         con.close()
@@ -230,7 +234,7 @@ def SaveFile():
         con = sql.connect("C:\\sqlite\\DOTConnections.db")
         DOTConnections.to_sql('DOT', con, if_exists='replace', index=False)
         con.close()
-
+        flash('Changes for Scores updated successfully.')
         return redirect(url_for('configure'))
     return redirect(url_for('configure'))
         

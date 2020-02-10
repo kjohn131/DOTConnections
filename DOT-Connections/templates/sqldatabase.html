@@ -243,7 +243,24 @@
                 </div>
             </div>
         </div>
+        <div id="div2" class="container" style="font-size:14px; width: 300px; height:25px;">
+            {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+            <div class="alert alert-warning alert-dismissible" role="alert">
+                <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+                {% for category, message in messages %}
+                {{ message }}
+                {% endfor %}
+            </div>
+            {% endif %}
+            {% endwith %}
+        </div>
         <div id="div1" class="container">
+            <div style="text-align: center; vertical-align: middle; font-family: Verdana; color: Blue;
+                position: absolute; top: 50%; left: 50%; margin-left: -88px; font-size: small;"
+                 id="loading" runat="server">
+                Please Wait ...<img src="../templates/loading.gif" style="vertical-align: middle" alt="Processing" />
+            </div>
             <table id="myTable" class="display nowrap" cellspacing="10" width="100%" style="font-size:12px; height: auto">
                 <thead>
                     <tr>
@@ -292,6 +309,7 @@
             $(document).ready(function () {
                 if (resultsLen === 0) {
                     $('#div1').hide();
+                    $('#loading').hide();
                 }
         });
         </script>
@@ -300,6 +318,7 @@
                 $('#Search').on('click', function () {
                     e.preventDefault();
                     $('#div1').show();
+                    $('#loading').show();
                 });
             });
         </script>
@@ -314,12 +333,14 @@
                     ]
                 });
                 $('div.dataTables_scrollBody').height('auto');
+                $('#loading').hide();
             });
         </script>
         <script>
             $(document).ready(function () {
                 $('#Reset').on('click', function () {
                     $('#div1').hide();
+                    $('#loading').hide();
                 });
             });
         </script>
