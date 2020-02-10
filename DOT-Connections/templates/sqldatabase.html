@@ -191,7 +191,7 @@
                             &nbsp;Search Panel
                         </div>
                         <div class="panel-body">
-                            <form action="{{ url_for('searchdata') }}" id ="myform" method="post">
+                            <form action="{{ url_for('searchdata') }}" id="myform" method="post">
                                 <div class="form-group">
                                     <div class="col-md-4">
                                         <label> CSJ-Project ID</label>
@@ -234,7 +234,7 @@
                                     </div>
                                     <div class="col-md-4">
                                         <input type="submit" id="Search" align="center" class="btn btn-primary" style="width:150px" value="SEARCH">
-                                        <input type="reset" id="Reset" align="center" class="btn btn-primary" onClick='javascript:hideTable();' style="width:150px" value="RESET">
+                                        <input type="reset" id="Reset" align="center" class="btn btn-primary" style="width:150px" value="RESET">
                                     </div>
                                 </div>
                             </form>
@@ -298,6 +298,7 @@
         <script>
             $(document).ready(function () {
                 $('#Search').on('click', function () {
+                    e.preventDefault();
                     $('#div1').show();
                 });
             });
@@ -313,6 +314,13 @@
                     ]
                 });
                 $('div.dataTables_scrollBody').height('auto');
+            });
+        </script>
+        <script>
+            $(document).ready(function () {
+                $('#Reset').on('click', function () {
+                    $('#div1').hide();
+                });
             });
         </script>
     </div>
