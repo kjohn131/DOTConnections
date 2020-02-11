@@ -1,0 +1,287 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="description" content="Bootstrap.">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="http://cdn.datatables.net/1.10.2/css/jquery.dataTables.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="http://cdn.datatables.net/1.10.2/js/jquery.dataTables.min.js"></script>
+    <script type="text/javascript" src="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+    <style>
+
+        .bgimg {
+          height: 100%;
+          background-position: center;
+          background-size: cover;
+          position: relative;
+          color: black;
+          font-family: "Calibri", Courier, monospace;
+          font-size: 25px;
+        }
+
+        .topleft {
+          position: absolute;
+          top: 0;
+          left: 16px;
+        }
+
+        .bottomleft {
+          position: absolute;
+          bottom: 0;
+          left: 16px;
+        }
+
+        .middle {
+          position: absolute;
+          top: 50%;
+          left: 50%;
+          transform: translate(-50%, -50%);
+          text-align: center;
+        }
+
+        hr {
+          margin: auto;
+          width: 40%;
+        }
+
+        thead,
+        tfoot {
+            color: #000000;
+            background: #CFE4FF;
+            background: radial-gradient(#CFE4FF, #CFE4FF);
+        }
+
+
+        tbody {
+            border-color: #454d55;
+        }
+
+        table {
+            border: 1px solid rgb(200, 200, 200);
+            letter-spacing: 1px;
+            font-family: Calibri;
+            font-size: 18px;
+        }
+
+        #myDiv {
+            display: none;
+            text-align: center;
+        }
+
+        #Search {
+            margin-top: 41px;
+        }
+
+        #Reset {
+            margin-top: 0px;
+            margin-left: 0px;
+            background-color: aliceblue;
+            border-color: dodgerblue;
+            color: dodgerblue;
+        }
+
+        .CANCEL {
+            color: dodgerblue;
+        }
+
+        div {
+            line-height: 25px;
+        }
+
+        label {
+            margin-top: 12px !important;
+        }
+
+        tbody {
+            display: block;
+            height: 500px;
+            overflow: auto;
+        }
+
+            thead, tbody tr {
+                display: table;
+                width: 100%;
+                table-layout: fixed;
+            }
+
+        thead {
+        }
+
+        #mySidenav a {
+            position: fixed;
+            left: -80px;
+            transition: 0.2s;
+            padding: 15px;
+            width: 100px;
+            text-decoration: none;
+            font-size: 14px;
+            color: white;
+            border-radius: 0 5px 5px 0;
+        }
+
+            #mySidenav a:hover {
+                left: 0;
+            }
+
+        #about {
+            top: 80px;
+            background-color: #7F7F7F;
+        }
+
+        #blog {
+            top: 140px;
+            background-color: #7F7F7F;
+        }
+
+        #projects {
+            top: 200px;
+            background-color: #7F7F7F;
+        }
+
+        #contact {
+            top: 260px;
+            background-color: #7F7F7F;
+        }
+
+        #mySidenav1 a {
+            position: fixed; /* Position them relative to the browser window */
+            right: -80px; /* Position them outside of the screen */
+            transition: 0.1s; /* Add transition on hover */
+            padding: 8px; /* 15px padding */
+            width: 120px; /* Set a specific width */
+            text-decoration: none; /* Remove underline */
+            font-size: 14px; /* Increase font size */
+            color: black; /* White text color */
+            border-radius: 5px 0px 0px 5px; /* Rounded corners on the top right and bottom right side */
+            border: groove;
+        }
+
+            #mySidenav1 a:hover {
+                right: 0; /* On mouse-over, make the elements appear as they should */
+            }
+
+        #contact1 {
+            top: 75px;
+            background-color: RGB(247,245,245);
+        }
+
+        .navbar {
+            height: 20px;
+        }
+
+        .link-button-wrapper {
+            width: 150px;
+            height: 35px;
+            /*box-shadow: inset 0px 1px 0px 0px #ffffff;*/
+            border-radius: 4px;
+            background-color: #097BC0;
+            /*box-shadow: 0px 2px 4px gray;*/
+            display: block;
+            /*border:1px solid #094BC0;*/
+        }
+
+            .link-button-wrapper > a {
+                display: inline-table;
+                cursor: pointer;
+                text-decoration: none;
+                height: 100%;
+                width: 100%;
+            }
+
+                .link-button-wrapper > a > h1 {
+                    margin: 0 auto;
+                    display: table-cell;
+                    vertical-align: middle;
+                    color: #f7f8f8;
+                    font-size: 18px;
+                    font-family: Calibri;
+                    text-align: center;
+                }
+    </style>
+</head>
+<body style="height:20px auto">
+    <div class="container"></div>
+    <div class="navbar navbar-inverse navbar-fixed-top">
+        <div class="container">
+            <div class="navbar-header navbar-nav mr-auto">
+                <button type="button" class="navbar-toggle navbar-toggle-right" data-toggle="collapse" data-target=".navbar-collapse">
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a href="/" class="navbar-brand" align="left">DOT Connections</a>
+            </div>
+        </div>
+    </div>
+    <div id="mySidenav" class="sidenav">
+        <a href={{ url_for('home') }} id="about">Home</a>
+        <a href={{ url_for('comingsoon') }} id="blog">Analytics</a>
+        <a href={{ url_for('comingsoon') }} id="projects">Projects</a>
+        <a href={{ url_for('comingsoon') }} id="contact">Reports</a>
+    </div>
+    <div id="mySidenav1" class="sidenav">
+        <a href={{ url_for('searchdata') }} align="center" id="contact1">
+            <i class="fa fa-backward" style="font-size: 20px;
+        color: dodgerblue;"></i>&nbsp;&nbsp;&nbsp;Go Back
+        </a>
+    </div>
+    <div>
+        <br><br><br>
+    </div>
+    <div style="margin-left:20px auto;">
+        <div id="loader"></div>
+        <div class="container">
+            <div class="bgimg">
+                <div class="middle">
+                    <br><br><br><br><br><br><br>
+                    <h2>This page is under construction.</h2>
+                    <h3>COMING SOON</h3>
+                    <hr>
+                    <p id="demo" style="font-size:30px"></p>
+                </div>
+            </div>
+            </div>
+        </div>
+    <script type="text/javascript">
+        // Set the date we're counting down to
+        var countDownDate = new Date("Jan 5, 2021 15:37:25").getTime();
+
+        // Update the count down every 1 second
+        var countdownfunction = setInterval(function() {
+
+          // Get todays date and time
+          var now = new Date().getTime();
+  
+          // Find the distance between now an the count down date
+          var distance = countDownDate - now;
+  
+          // Time calculations for days, hours, minutes and seconds
+          var days = Math.floor(distance / (10000 * 60 * 60 * 24));
+          var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+          var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+          var seconds = Math.floor((distance % (1000 * 60)) / 1000);
+  
+          // Output the result in an element with id="demo"
+          document.getElementById("demo").innerHTML = days + "d " + hours + "h "
+          + minutes + "m " + seconds + "s ";
+  
+          // If the count down is over, write some text 
+          if (distance < 0) {
+            clearInterval(countdownfunction);
+            document.getElementById("demo").innerHTML = "EXPIRED";
+          }
+        }, 1000);
+    </script>
+
+</body>
+</html>

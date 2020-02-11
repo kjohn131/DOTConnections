@@ -24,6 +24,10 @@ app.secret_key = '0000'
 def loginscreen():
     return render_template('index.html')
 
+@app.route('/comingsoon')
+def comingsoon():
+    return render_template('comingsoon.html')
+
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     # Output message if something goes wrong...
@@ -34,7 +38,7 @@ def login():
         username = request.form['username']
         password = request.form['password']
         # Check if account exists using MySQL
-        conn = sql.connect('C:\\sqlite\\DOTConnections.db')
+        conn = sql.connect("C:\\sqlite\\DOTConnections.db")
         conn.row_factory = sql.Row
         cur = conn.cursor()
         sqlquery = "SELECT * FROM accounts WHERE username = ? AND password = ?"
