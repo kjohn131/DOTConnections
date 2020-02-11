@@ -34,10 +34,12 @@
   <ItemGroup>
     <Folder Include="DOT-Connections\" />
     <Folder Include="DOT-Connections\functions\" />
+    <Folder Include="DOT-Connections\database\" />
     <Folder Include="DOT-Connections\static\" />
     <Folder Include="DOT-Connections\templates\" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="DOT-Connections\database\DOTConnections.db" />
     <Content Include="DOT-Connections\templates\searchpanel.html" />
     <Content Include="requirements.txt" />
     <Content Include="DOT-Connections\README.md" />
