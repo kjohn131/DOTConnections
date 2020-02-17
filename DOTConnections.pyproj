@@ -40,6 +40,7 @@
   <ItemGroup>
     <Content Include="DOT-Connections\templates\searchpanel.html" />
     <Content Include="DOT-Connections\templates\comingsoon.html" />
+    <Content Include="DOT-Connections\templates\gearing.html" />
     <Content Include="requirements.txt" />
     <Content Include="DOT-Connections\README.md" />
     <Content Include="DOT-Connections\static\style.css" />

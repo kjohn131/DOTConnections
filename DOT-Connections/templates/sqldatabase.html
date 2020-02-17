@@ -136,7 +136,10 @@
             font-size: 14px; /* Increase font size */
             color: black; /* White text color */
             border-radius: 5px 0px 0px 5px; /* Rounded corners on the top right and bottom right side */
-            border: groove;
+            border:hidden;
+            background-color:#C3C3C3;
+            border-color:black;
+           
         }
 
             #mySidenav1 a:hover {
@@ -146,6 +149,36 @@
         #contact1 {
             top: 75px;
             background-color: RGB(247,245,245);
+        }
+
+
+             #mySidenav2 a {
+            position: fixed; /* Position them relative to the browser window */
+            right: -80px; /* Position them outside of the screen */
+            transition: 0.1s; /* Add transition on hover */
+            padding: 8px; /* 15px padding */
+            width: 120px; /* Set a specific width */
+            text-decoration: none; /* Remove underline */
+            font-size: 14px; /* Increase font size */
+            color: black; /* White text color */
+            border-radius: 5px 0px 0px 5px; /* Rounded corners on the top right and bottom right side */
+            border: hidden;
+            background-color:#C3C3C3;
+            border-color:black;
+        }
+
+            #mySidenav2 a:hover {
+                right: 0; /* On mouse-over, make the elements appear as they should */
+            }
+
+        #contact2 {
+            top: 125px;
+            background-color: RGB(247,245,245);
+        }
+
+        .fa-gears:before, .fa-cogs:before {
+            content: "\f085";
+            align-items:flex-start;
         }
 
         .navbar {
@@ -175,12 +208,17 @@
         <a href={{ url_for('comingsoon') }} id="contact">Reports</a>
     </div>
     <div id="mySidenav1" class="sidenav">
-        <a href={{ url_for('configure') }} align="center" id="contact1"><i class="fa fa-gear" style="font-size: 20px; color: #000000;"></i>&nbsp;&nbsp;&nbsp;Configure</a>
+        <a href={{ url_for('configure') }} align="center" id="contact1"><i class="fa fa-wrench" style="font-size: 20px; color: #000000;"></i>&nbsp;&nbsp;&nbsp;Configure</a>
+    </div>
+    <div>
+    </div>
+    <div id="mySidenav2" class="sidenav">
+        <a href={{ url_for('gear') }} align="center" id="contact2"><i class="fa fa-gears" style="align-self:start; font-size: 20px;color: #000000;"></i>&nbsp;&nbsp;&nbsp;Gearing</a>
     </div>
     <div>
         <br><br><br>
     </div>
-    <div style="margin-left:20px auto;">
+    <div style="margin-left: 20px auto;">
         <div id="loader"></div>
         <div class="container">
             <div class="loader"></div>

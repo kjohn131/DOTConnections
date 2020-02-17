@@ -156,7 +156,7 @@ def searchdata():
     return render_template('sqldatabase.html', results=[])
 
 
-@app.route('/configure',)
+@app.route('/configure')
 def configure():
     con = sql.connect("C:\\sqlite\\DOTConnections.db")
     con.row_factory = sql.Row
@@ -183,6 +183,7 @@ def SaveFile():
         con = sql.connect("C:\\sqlite\\DOTConnections.db")
         DOTConnections = pd.read_sql_query("SELECT * from DOT", con)
         Config = pd.read_sql_query("SELECT * from Config", con)
+        Gear = pd.read_sql_query("SELECT * from Gear", con)
         con.close()
 
         Consolidate = pd.merge(DOTConnections, Config, how='left', left_on='Status', right_on='Key')
@@ -199,6 +200,7 @@ def SaveFile():
 
         Config.rename(columns={'Key':'ConstructionCostEstimate'}, inplace=True)
         ConfigureScore = Config[Config['Key Type'] == 'Cost Score']
+        ConfigureScore['ConstructionCostEstimate'] = ConfigureScore['ConstructionCostEstimate'].str.replace(',', '')
         ConfigureScore.ConstructionCostEstimate = pd.to_numeric(ConfigureScore.ConstructionCostEstimate,errors = 'coerce')
         DOTConnections.ConstructionCostEstimate = pd.to_numeric(DOTConnections.ConstructionCostEstimate,errors = 'coerce')  
         ConfigureScore = ConfigureScore.sort_values(by=['ConstructionCostEstimate'])
@@ -206,17 +208,20 @@ def SaveFile():
         Consolidate = pd.merge_asof(DOTConnections, ConfigureScore, on = 'ConstructionCostEstimate', direction = 'nearest')
         Consolidate.drop(['Key Type', 'CostScore'], axis=1, inplace=True)
         Consolidate.rename(columns={'Value':'CostScore'}, inplace=True)
+
+        ConfigureScore['ConstructionCostEstimate'] = ConfigureScore['ConstructionCostEstimate'].map('{:,.0f}'.format)
+        Config[Config['Key Type'] == 'Cost Score'] = ConfigureScore
         Config.rename(columns={'ConstructionCostEstimate':'Key'}, inplace=True)
 
         DOTConnections = Consolidate
 
-        weightage = Config[Config['Key'] == 'Urban Score']
+        weightage = Gear[Gear['Key'] == 'Urban Score']
         Consolidate['Urban Score'] = int(weightage['Value'])
 
-        weightage = Config[Config['Key'] == 'Status Score']
+        weightage = Gear[Gear['Key'] == 'Status Score']
         Consolidate['Status Score'] = int(weightage['Value'])
 
-        weightage = Config[Config['Key'] == 'Cost Score']
+        weightage = Gear[Gear['Key'] == 'Cost Score']
         Consolidate['Cost Score'] = int(weightage['Value'])
 
         Consolidate.drop(['CombinedScore'], axis=1, inplace=True)
@@ -237,10 +242,106 @@ def SaveFile():
 
         con = sql.connect("C:\\sqlite\\DOTConnections.db")
         DOTConnections.to_sql('DOT', con, if_exists='replace', index=False)
+        Config.to_sql('Config', con, if_exists='replace', index=False)
         con.close()
-        flash('Changes for Scores updated successfully.')
+
+
+        flash('Changes of Scores updated successfully.')
         return redirect(url_for('configure'))
     return redirect(url_for('configure'))
+
+@app.route('/gear')
+def gear():
+    con = sql.connect("C:\\sqlite\\DOTConnections.db")
+    con.row_factory = sql.Row
+    cur = con.cursor()
+    cur.execute("SELECT * from Gear")
+    results = cur.fetchall();
+    con.close()
+    return render_template('gearing.html', results=results)
+
+@app.route('/GearFile', methods=['POST', 'GET'])
+def GearFile():
+    if request.method == 'POST':
+        geardata = request.form["hidden"]
+        geardata = geardata.split("|")
+        while('' in geardata) : 
+            geardata.remove('')
+        geardata = [geardata[i:i + 3] for i in range(0, len(geardata), 3)]
+        geardata = pd.DataFrame(np.vstack(geardata))
+        geardata.columns = ['Key Type','Key','Value']
+        con = sql.connect("C:\\sqlite\\DOTConnections.db")
+        geardata.to_sql('Gear', con, if_exists='replace', index=False)
+        con.close()
+
+        con = sql.connect("C:\\sqlite\\DOTConnections.db")
+        DOTConnections = pd.read_sql_query("SELECT * from DOT", con)
+        Config = pd.read_sql_query("SELECT * from Config", con)
+        Gear = pd.read_sql_query("SELECT * from Gear", con)
+        con.close()
+
+        Consolidate = pd.merge(DOTConnections, Config, how='left', left_on='Status', right_on='Key')
+        Consolidate.drop(['Key Type', 'Key', 'StatusScore'], axis=1, inplace=True)
+        Consolidate.rename(columns={'Value':'StatusScore'}, inplace=True)
+
+        DOTConnections = Consolidate
+
+        Consolidate = pd.merge(DOTConnections, Config, how='left', left_on='UrbanOrRuralFlag', right_on='Key')
+        Consolidate.drop(['Key Type', 'Key', 'UrbanRuralScore'], axis=1, inplace=True)
+        Consolidate.rename(columns={'Value':'UrbanRuralScore'}, inplace=True)
+
+        DOTConnections = Consolidate
+
+        Config.rename(columns={'Key':'ConstructionCostEstimate'}, inplace=True)
+        ConfigureScore = Config[Config['Key Type'] == 'Cost Score']
+        ConfigureScore['ConstructionCostEstimate'] = ConfigureScore['ConstructionCostEstimate'].str.replace(',', '')
+        ConfigureScore.ConstructionCostEstimate = pd.to_numeric(ConfigureScore.ConstructionCostEstimate,errors = 'coerce')
+        DOTConnections.ConstructionCostEstimate = pd.to_numeric(DOTConnections.ConstructionCostEstimate,errors = 'coerce')  
+        ConfigureScore = ConfigureScore.sort_values(by=['ConstructionCostEstimate'])
+        DOTConnections = DOTConnections.sort_values(by=['ConstructionCostEstimate'])
+        Consolidate = pd.merge_asof(DOTConnections, ConfigureScore, on = 'ConstructionCostEstimate', direction = 'nearest')
+        Consolidate.drop(['Key Type', 'CostScore'], axis=1, inplace=True)
+        Consolidate.rename(columns={'Value':'CostScore'}, inplace=True)
+
+        ConfigureScore['ConstructionCostEstimate'] = ConfigureScore['ConstructionCostEstimate'].map('{:,.0f}'.format)
+        Config[Config['Key Type'] == 'Cost Score'] = ConfigureScore
+        Config.rename(columns={'ConstructionCostEstimate':'Key'}, inplace=True)
+
+        DOTConnections = Consolidate
+
+        weightage = Gear[Gear['Key'] == 'Urban Score']
+        Consolidate['Urban Score'] = int(weightage['Value'])
+
+        weightage = Gear[Gear['Key'] == 'Status Score']
+        Consolidate['Status Score'] = int(weightage['Value'])
+
+        weightage = Gear[Gear['Key'] == 'Cost Score']
+        Consolidate['Cost Score'] = int(weightage['Value'])
+
+        Consolidate.drop(['CombinedScore'], axis=1, inplace=True)
+        Consolidate[['StatusScore','Status Score']] = Consolidate[['StatusScore','Status Score']].astype(float)
+        Consolidate[['CostScore','Cost Score']] = Consolidate[['CostScore','Cost Score']].astype(float)
+        Consolidate[['UrbanRuralScore','Urban Score']] = Consolidate[['UrbanRuralScore','Urban Score']].astype(float)
+
+        Consolidate['CombinedScore'] = Consolidate['StatusScore'] * Consolidate['Status Score'] + Consolidate['CostScore'] * Consolidate['Cost Score'] + Consolidate['UrbanRuralScore'] * Consolidate['Urban Score']
+
+        Consolidate[['StatusScore','Status Score']] = Consolidate[['StatusScore','Status Score']].astype(int)
+        Consolidate[['CostScore','Cost Score']] = Consolidate[['CostScore','Cost Score']].astype(int)
+        Consolidate[['UrbanRuralScore','Urban Score']] = Consolidate[['UrbanRuralScore','Urban Score']].astype(int)
+        Consolidate['CombinedScore'] = Consolidate['CombinedScore'].astype(int)
+
+        Consolidate.drop(['Status Score', 'Cost Score', 'Urban Score'], axis=1, inplace=True)
+
+        DOTConnections = Consolidate
+
+        con = sql.connect("C:\\sqlite\\DOTConnections.db")
+        DOTConnections.to_sql('DOT', con, if_exists='replace', index=False)
+        Config.to_sql('Config', con, if_exists='replace', index=False)
+        con.close()
+        flash('Changes of Scores updated successfully.')
+        return redirect(url_for('gear'))
+    return redirect(url_for('gear'))
+
         
 @app.route('/logout')
 def logout():

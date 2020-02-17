@@ -52,10 +52,11 @@
             background-color: aliceblue;
             border-color: dodgerblue;
             color: dodgerblue;
-            
         }
 
-        .CANCEL {color: dodgerblue;}
+        .CANCEL {
+            color: dodgerblue;
+        }
 
         div {
             line-height: 25px;
@@ -67,7 +68,7 @@
 
         tbody {
             display: block;
-            height: 500px;
+            height: 147px;
             overflow: auto;
         }
 
@@ -141,7 +142,7 @@
             background-color: RGB(247,245,245);
         }
 
-            #mySidenav2 a {
+          #mySidenav2 a {
             position: fixed; /* Position them relative to the browser window */
             right: -80px; /* Position them outside of the screen */
             transition: 0.1s; /* Add transition on hover */
@@ -163,11 +164,6 @@
         #contact2 {
             top: 125px;
             background-color: RGB(247,245,245);
-        }
-
-
-        .navbar {
-            height: 20px;
         }
 
         .link-button-wrapper {
@@ -226,7 +222,8 @@
         </a>
     </div>
     <div id="mySidenav2" class="sidenav">
-        <a href={{ url_for('gear') }} align="center" id="contact2"><i class="fa fa-gears" style="align-self:start; font-size: 20px;color: #000000;"></i>&nbsp;&nbsp;&nbsp;Gearing</a>
+        <a href={{ url_for('configure') }} align="center" id="contact2">
+        <i class="fa fa-wrench" style="font-size: 20px; color: #000000;"></i>&nbsp;&nbsp;&nbsp;Configure</a>
     </div>
         <div>
             <br><br><br>
@@ -242,10 +239,10 @@
                                 <a href="#">
                                     <span class="glyphicon glyphicon-align-right" style="font-size: 20px; color: grey"></span>
                                 </a>
-                                &nbsp;Configuration
+                                &nbsp;Gearing
                             </div>
                             <div class="panel-body">
-                                <form action="{{ url_for('SaveFile') }}" method="post">
+                                <form action="{{ url_for('GearFile') }}" method="post">
                                     <table id="myTable" class="table table-striped table-hover table-sm" cellspacing="10" width="100%" style="font-size: 14px; height: auto">
                                         <thead>
                                             <tr style="text-align: right;">
@@ -270,7 +267,7 @@
                                     <div class="col-md-10">
                                         <input type="button" id="Save" align="center" class="btn btn-primary" style="width:150px" value="SAVE" onclick="showTableData();">
                                         <input type="submit" hidden="hidden" id="Submit" align="center" class="btn btn-primary" style="width:150px" value="SUBMIT">
-                                        <a href={{ url_for('configure') }} input type="button" id="Reset" align="center" class="btn btn-primary" style="width:150px; height:34px;">CANCEL</a>
+                                        <a href={{ url_for('gear') }} input type="button" id="Reset" align="center" class="btn btn-primary" style="width:150px; height:34px;">CANCEL</a>
                                     </div>
                                 </form>
                                 <div id="div2" class="container" style="font-size:14px; width: 400px; height:2px;">
@@ -308,6 +305,4 @@
             }
         </script>
 </body>
-</html >
-
-
+</html>
