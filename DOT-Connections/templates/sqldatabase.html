@@ -19,6 +19,8 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.3.1.js"></script>
     <script src="https://cdn.datatables.net/1.10.20/js/jquery.dataTables.min.js"></script>
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet">
+    <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAFxkQRMJkD1WEbqYT34ZT4KvxF5I_Sb3g"></script>
     <style>
 
 
@@ -136,10 +138,9 @@
             font-size: 14px; /* Increase font size */
             color: black; /* White text color */
             border-radius: 5px 0px 0px 5px; /* Rounded corners on the top right and bottom right side */
-            border:hidden;
-            background-color:#C3C3C3;
-            border-color:black;
-           
+            border: hidden;
+            background-color: #C3C3C3;
+            border-color: black;
         }
 
             #mySidenav1 a:hover {
@@ -152,7 +153,7 @@
         }
 
 
-             #mySidenav2 a {
+        #mySidenav2 a {
             position: fixed; /* Position them relative to the browser window */
             right: -80px; /* Position them outside of the screen */
             transition: 0.1s; /* Add transition on hover */
@@ -163,8 +164,8 @@
             color: black; /* White text color */
             border-radius: 5px 0px 0px 5px; /* Rounded corners on the top right and bottom right side */
             border: hidden;
-            background-color:#C3C3C3;
-            border-color:black;
+            background-color: #C3C3C3;
+            border-color: black;
         }
 
             #mySidenav2 a:hover {
@@ -178,13 +179,12 @@
 
         .fa-gears:before, .fa-cogs:before {
             content: "\f085";
-            align-items:flex-start;
+            align-items: flex-start;
         }
 
         .navbar {
             height: 20px;
         }
-
     </style>
 </head>
 <body style="height:20px auto">
@@ -295,9 +295,10 @@
             {% endwith %}
         </div>
         <div id="div1" class="container">
-            <div style="text-align: center; vertical-align: middle; font-family: Verdana; color: Blue;
-                position: absolute; top: 50%; left: 50%; margin-left: -88px; font-size: small;"
+            <div style="text-align: center; vertical-align: middle; font-family: Verdana; color: black;
+                position: absolute; top: 50%; left: 50%; margin-left: -88px; font-size:small;"
                  id="loading" runat="server">
+                <i class="fa fa-spinner fa-spin" style="font-size:30px;"></i>
                 Loading...Please Wait!
             </div>
             <table id="myTable" class="display nowrap" cellspacing="10" width="100%" style="font-size:12px; height: auto">
